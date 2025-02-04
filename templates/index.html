@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simulator Connection Status</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            padding: 20px;
+        }
+        h1 {
+            color: #333;
+        }
+        #status {
+            font-weight: bold;
+            padding: 10px 20px;
+            border-radius: 5px;
+            display: inline-block;
+        }
+        .connected {
+            background-color: #4caf50;
+            color: white;
+        }
+        .disconnected {
+            background-color: #f44336;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Arduino Connection Status</h1>
+    <p>Current status: <span id="status" class="disconnected">Checking...</span></p>
+
+    <script>
+        function checkConnection() {
+            fetch('/check_connection')
+                .then(response => response.json())
+                .then(data => {
+                    const statusElement = document.getElementById('status');
+                    if (data.status === 'connected') {
+                        statusElement.textContent = 'Connected';
+                        statusElement.className = 'connected';
+                    } else {
+                        statusElement.textContent = 'Disconnected';
+                        statusElement.className = 'disconnected';
+                    }
+                })
+                .catch(() => {
+                    const statusElement = document.getElementById('status');
+                    statusElement.textContent = 'Disconnected';
+                    statusElement.className = 'disconnected';
+                });
+        }
+
+        // Check connection every 5 seconds
+        setInterval(checkConnection, 5000);
+        // Initial check on page load
+        checkConnection();
+    </script>
+
+</body>
+</html>
